@@ -1,0 +1,121 @@
+<% layout('../layouts/dashboard-layout') %>
+
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand me-auto fw-bold text-grey66" href="#">類別</a>
+        <button type="button" class="btn btn-brown5f" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#productsMenuModal">新增類別</button>
+    </nav>
+    <% if(hasInfo) { %>
+        <% for(var prop in messages){ %>
+            <div class="alert alert-warning">
+            <%- messages[prop] %>
+            </div>
+        <% } %>
+    <% } %>
+    <table class="table table-borderless align-middle mt-3">
+        <thead>
+            <tr>
+            <th scope="col">
+                <input class="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="...">
+            </th>
+            <th scope="col">名稱</th>
+            <th scope="col">狀態</th>
+            <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for(var prop in productsMenu){ %>
+            <tr >
+                <th scope="row">
+                    <input class="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="...">
+                </th>
+                <td><%- productsMenu[prop].mainName %></td>
+                <td class="text-success"><%- productsMenu[prop].status %></td>
+                <td align="right">
+                    <button type="button" class="btn btn-outline-dark editBtn" data-id="<%- productsMenu[prop].id %>" data-bs-toggle="modal" data-bs-target="#productsMenuModal">編輯</button>
+                    <form action="/dashboard/productsMenu/delete/<%- productsMenu[prop].id %>" method="POST">
+                        <button type="submit" class="btn btn-outline-danger ms-2 deletePost">刪除</button>
+                    </form>
+                </td>
+            </tr>
+            <% } %>
+        </tbody>
+    </table>
+    <section class="d-flex justify-content-between mt-5">
+        <p class="fs-7">顯示 1 到 10 項目，共 <%- productsMenuTotal %> 個項目</p>
+        <%- include ../partials/pagination.ejs %>
+    </section>
+</div>
+<!-- 視窗 -->
+<div class="modal fade" id="productsMenuModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <form class="modal-content"
+        action="/dashboard/productsMenu/create"
+        method="POST">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">新增類別</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row mb-3">
+                        <p>主類別</p>
+                        <div class="col-10">
+                            <input type="text" class="form-control" id="mainName" name="mainName" placeholder="請輸入主類別名稱">
+                        </div>
+                        <div class="col">
+                            <select class="form-select" aria-label="Default select example" id="status" name="status">
+                                <option value="已開啟">已開啟</option>
+                                <option value="已關閉">已關閉</option>
+                            </select>
+                        </div>
+                    </div>
+                    <hr>
+                    <p>子類別</p>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div id="container"></div>
+                            <button type="button" class="btn btn-outline-primary w-100" id="addChildInput">新增</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">儲存</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    const addChildInput = document.getElementById('addChildInput');
+    const container = document.getElementById('container');
+    const editBtns = document.querySelectorAll('.editBtn');
+    const deleteBtns = document.querySelectorAll('.deletePost');
+    addChildInput.addEventListener('click',function(e){
+        e.preventDefault();
+        var str = '';
+
+        str += `
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" id="childName" name="childName" placeholder="請輸入子類別名稱"  aria-describedby="button-addon2">
+            <button class="btn btn-outline-danger delete-button" type="button" id="button-addon2">刪除</button>
+        </div>`
+
+        var newElement = document.createElement('div');
+        newElement.innerHTML = str;
+
+        container.appendChild(newElement);
+        var deleteButton = newElement.querySelector('.delete-button');
+        deleteButton.addEventListener('click', function () {
+            container.removeChild(newElement); 
+        });
+    })
+    // 編輯
+    editBtns.forEach(function(editBtn) {
+        editBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            let id = e.target.dataset.id;
+            console.log(id);
+        });
+    });
+</script>
