@@ -1,7 +1,6 @@
-const convertPagination = function (resource, currentPage){ // 原始資料 當前頁面
+const convertPagination = function (resource, currentPage,currentPageRef,perPage){ // 原始資料 當前頁面
   //分頁
   const totalResult = resource.length; //總資料
-  const perPage = 3; // 每頁幾筆資料
   const pageTotal = Math.ceil(totalResult / perPage); //總頁數 無條件進位Math.ceil
   if(currentPage > pageTotal) { // 當前頁數不能比總頁數大
     currentPage = pageTotal
@@ -17,12 +16,13 @@ const convertPagination = function (resource, currentPage){ // 原始資料 當�
       data.push(item);
     }
   })
-
   const page = {
     pageTotal, // 總共有幾頁
     currentPage, //目前在第幾頁
     hasPre: currentPage > 1, // 上一頁
-    hasNext: currentPage < pageTotal // 下一頁
+    hasNext: currentPage < pageTotal, // 下一頁
+    currentPageRef, // 當前頁面路徑
+    totalResult // 總資料
   }
   return {
     page, // 回傳頁面資訊

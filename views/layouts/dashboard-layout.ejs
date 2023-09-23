@@ -16,21 +16,21 @@
                         <img src="../images/logo.svg" alt="" class="img-fluid">
                     </h1>
                     <a class="nav-link disabled my-2">產品管理</a>
-                    <a class="nav-link d-flex mb-2" href="./productsMenu">
+                    <a class="nav-link d-flex mb-2 <%= currentPageRef === '/productsMenu' ? 'active' : ''%>" href="./productsMenu">
                         <i class="category me-2"></i>
                         類別
                     </a>
-                    <a class="nav-link d-flex mb-2" href="./product">
+                    <a class="nav-link d-flex mb-2 <%= currentPageRef === '/product' ? 'active' : ''%>" href="./product">
                         <i class="product me-2"></i>
                         產品
                     </a>
                     <a class="nav-link disabled my-2">文章管理</a>
-                    <a class="nav-link d-flex mb-2" href="./article">
+                    <a class="nav-link d-flex mb-2 <%= currentPageRef === '/article' ? 'active' : ''%>" href="./article">
                         <i class="article me-2"></i>
                         文章
                     </a>
                     <a class="nav-link disabled my-2">使用者管理</a>
-                    <a class="nav-link d-flex mb-2" href="./user">
+                    <a class="nav-link d-flex mb-2 <%= currentPageRef === '/user' ? 'active' : ''%>" href="./user">
                         <i class="user me-2"></i>
                         使用者
                     </a>

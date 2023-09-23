@@ -31,8 +31,10 @@
                 </th>
                 <td><%- productsMenu[prop].mainName %></td>
                 <td class="text-success"><%- productsMenu[prop].status %></td>
-                <td align="right">
-                    <button type="button" class="btn btn-outline-dark editBtn" data-id="<%- productsMenu[prop].id %>" data-bs-toggle="modal" data-bs-target="#productsMenuModal">編輯</button>
+                <td class="d-flex justify-content-end">
+                    <form action="/dashboard/productsMenu/update/<%- productsMenu[prop].id %>" method="POST">
+                        <button type="submit" class="btn btn-outline-dark editBtn" data-id="<%- productsMenu[prop].id %>" data-bs-toggle="modal" data-bs-target="#productsMenuModal">編輯</button>
+                    </form>
                     <form action="/dashboard/productsMenu/delete/<%- productsMenu[prop].id %>" method="POST">
                         <button type="submit" class="btn btn-outline-danger ms-2 deletePost">刪除</button>
                     </form>
@@ -42,7 +44,7 @@
         </tbody>
     </table>
     <section class="d-flex justify-content-between mt-5">
-        <p class="fs-7">顯示 1 到 10 項目，共 <%- productsMenuTotal %> 個項目</p>
+        <p class="fs-7">共 <%- page.totalResult %> 個項目</p>
         <%- include ../partials/pagination.ejs %>
     </section>
 </div>
@@ -111,11 +113,11 @@
         });
     })
     // 編輯
-    editBtns.forEach(function(editBtn) {
-        editBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            let id = e.target.dataset.id;
-            console.log(id);
-        });
-    });
+    // editBtns.forEach(function(editBtn) {
+    //     editBtn.addEventListener('click', function(e) {
+    //         e.preventDefault();
+    //         let id = e.target.dataset.id;
+    //         console.log(id);
+    //     });
+    // });
 </script>

@@ -29,29 +29,29 @@ body{
   width: 16px;
 }
 .nav-pills i.category{
-  background: url('../images/category.svg') no-repeat center center / contain;
+  background: url('../images/icon/category.svg') no-repeat center center / contain;
 }
 .nav-pills i.product{
-  background: url('../images/product.svg') no-repeat center center / contain;
+  background: url('../images/icon/product.svg') no-repeat center center / contain;
 }
 .nav-pills i.article{
-  background: url('../images/article.svg') no-repeat center center / contain;
+  background: url('../images/icon/article.svg') no-repeat center center / contain;
 }
 .nav-pills i.user{
-  background: url('../images/user.svg') no-repeat center center / contain;
+  background: url('../images/icon/user.svg') no-repeat center center / contain;
 }
 
 .nav-pills .nav-link.active i.category{
-  background: url('../images/category_on.svg') no-repeat center center / contain;
+  background: url('../images/icon/category_on.svg') no-repeat center center / contain;
 }
 .nav-pills .nav-link.active i.product{
-  background: url('../images/product_on.svg') no-repeat center center / contain;
+  background: url('../images/icon/product_on.svg') no-repeat center center / contain;
 }
 .nav-pills .nav-link.active i.article{
-  background: url('../images/article_on.svg') no-repeat center center / contain;
+  background: url('../images/icon/article_on.svg') no-repeat center center / contain;
 }
 .nav-pills .nav-link.active i.user{
-  background: url('../images/user_on.svg') no-repeat center center / contain;
+  background: url('../images/icon/user_on.svg') no-repeat center center / contain;
 }
 
 .btn-brown5f{
