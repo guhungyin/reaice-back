@@ -4,7 +4,7 @@ const firebaseAdminDb = require('../connections/firebase_admin');
 const convertPagination = require('../modules/convertPagination')
 
 // 路徑
-const productsMenuRef = firebaseAdminDb.ref('productsMenu'); //產品類別
+const productsMenuRef = firebaseAdminDb.ref('productsMenu'); //產品選單
 const articlesRef = firebaseAdminDb.ref('articles'); // 文章內容 
 
 router.get('/user', function(req, res, next) {
@@ -28,20 +28,25 @@ router.get('/product', function(req, res, next) {
     currentPageRef
   });
 });
-// 產品類別頁面
+// 產品選單頁面
 router.get('/productsMenu', function(req, res, next) {
   const messages = req.flash('info');
   let currentPage = Number.parseInt(req.query.page) || 1; // 當前頁面
   productsMenuRef.once('value').then(function(snapshot){
+
     const productsMenuTotal = []; //預設一個資料量(陣列)，將讀取的資料物件用forEach，新增到陣列裡面，並取得長度。
     snapshot.forEach(function (snapshotChild) {
       productsMenuTotal.push(snapshotChild.val())
     })
     productsMenuTotal.reverse(); // 把資料順序反過來
-    const perPage = 10 //每頁顯示10資料
+
+
+
+    const perPage = 3 //每頁顯示10資料
     const currentPageRef = '/productsMenu' // 分頁的路徑
-    const data = convertPagination(productsMenuTotal,currentPage,currentPageRef,perPage)
-    // console.log(data);
+    
+    const data = convertPagination(productsMenuTotal,currentPage,currentPageRef,perPage);
+    
     res.render('dashboard/productsMenu', { 
       title: 'Express',
       messages,
@@ -52,18 +57,18 @@ router.get('/productsMenu', function(req, res, next) {
       currentPageRef
     });
     
+    
   })
 });
 
 
-// 產品類別 -- 主類別 -- 新增
+// 產品選單 -- 主選單 -- 新增
 router.post('/productsMenu/create', function (req, res){
     const data = req.body;
-    // console.log(data);
     const productsMenusRef = productsMenuRef.push();
     const key = productsMenusRef.key;
     data.id = key;
-    productsMenuRef.orderByChild('mainName').equalTo(data.mainName).once('value')
+    productsMenuRef.orderByChild('name').equalTo(data.name).once('value')
       .then(function(snapshot){
         if (snapshot.val() !== null) {
           req.flash('info','已有相同名稱');
@@ -76,36 +81,70 @@ router.post('/productsMenu/create', function (req, res){
       })
 })
 
-// 產品類別 -- 主類別 -- 更新
+// 產品選單 -- 主選單 -- 更新
 router.post('/productsMenu/update/:id', function(req,res){
-  const id = e.target.dataset.id;
-  console.log(id);
+  const id = req.params.id;
   const data = req.body;
-  console.log(data);
-  res.redirect(`dashboard/productsMenu`);
-  // const { id } = req.params;
-  // productsMenuRef.child(id).update(data).then(function(){
-    
-  // })
+  productsMenuRef.child(id).update(data).then(function(){
+    req.flash('info','子項目已更新')
+    res.redirect(`/dashboard/productsMenu`);
+  })
 });
 
 
-// 產品類別 -- 主類別 -- 刪除
+// 產品選單 -- 主選單 -- 刪除
 router.post('/productsMenu/delete/:id', function(req,res){
   const id = req.params.id;
   productsMenuRef.child(id).remove();
-  req.flash('info','欄位已刪除')
+  req.flash('info','主選單已刪除')
   res.redirect('/dashboard/productsMenu');
 });
 
 
 
 
-// 產品類別 -- 子類別 -- 新增
+// 產品選單 -- 子選單 -- 新增
+router.post('/productsMenu/createSubMenu/:id', function (req, res){
+  const data = req.body;
+  const id = req.params.id;
+  const subMenusRef = firebaseAdminDb.ref(`productsMenu/${id}/subMenus`);
+  const productsSubMenusRef = subMenusRef.push(data.subName);
+  subMenusRef.orderByValue().equalTo(data.subName).once('value')
+  .then(function(snapshot){
+    if (snapshot.val() !== null) {
+      req.flash('info','已有相同名稱');
+      res.redirect('/dashboard/productsMenu')
+    } else {
+      productsSubMenusRef.then(function () {
+        res.redirect(`/dashboard/productsMenu`);
+      })
+    }
+  })
 
-// 產品類別 -- 子類別 -- 更新
 
-// 產品類別 -- 子類別 -- 刪除
+})
+// 產品選單 -- 子選單 -- 更新
+router.post('/productsMenu/updateSubName/:id', function(req,res){
+  const subMenusRef = firebaseAdminDb.ref(`productsMenu/${id}/subMenus`);
+  const id = req.params.id;
+  console.log(id);
+  const data = req.body;
+  console.log(data);
+  subMenusRef.child(id).update(data);
+  req.flash('info','子項目已更新')
+  res.redirect('/dashboard/productsMenu');
+});
+
+// 產品選單 -- 子選單 -- 刪除
+
+router.post('/productsMenu/deleteSubName/:id', function(req,res){
+  const id = req.params.id;
+  const subMenusRef = firebaseAdminDb.ref(`/subMenus`);
+  const data = req.body;
+  // subMenusRef.orderByKey(id).remove();
+  // req.flash('info','子項目已刪除')
+  // res.redirect('/dashboard/productsMenu');
+});
 
 
 
