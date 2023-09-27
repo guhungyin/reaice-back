@@ -4,7 +4,7 @@ const firebaseAdminDb = require('../connections/firebase_admin');
 const convertPagination = require('../modules/convertPagination')
 
 // 路徑
-const productsMenuRef = firebaseAdminDb.ref('productsMenu'); //產品選單
+const productsMenuRef = firebaseAdminDb.ref(`productsMenu`); //產品選單
 const articlesRef = firebaseAdminDb.ref('articles'); // 文章內容 
 
 router.get('/user', function(req, res, next) {
@@ -64,28 +64,25 @@ router.get('/productsMenu', function(req, res, next) {
 
 // 產品選單 -- 主選單 -- 新增
 router.post('/productsMenu/create', function (req, res){
-    const data = req.body;
-    const productsMenusRef = productsMenuRef.push();
-    const key = productsMenusRef.key;
-    data.id = key;
-    productsMenuRef.orderByChild('name').equalTo(data.name).once('value')
-      .then(function(snapshot){
-        if (snapshot.val() !== null) {
-          req.flash('info','已有相同名稱');
+  const data = req.body;
+  let menuRef = firebaseAdminDb.ref(`productsMenu/${data.path}`)
+  productsMenuRef.orderByChild('path').equalTo(data.path).once('value')
+    .then(function(snapshot){
+      if (snapshot.val() !== null) {
+        req.flash('info','已有相同名稱');
+        res.redirect('/dashboard/productsMenu')
+      } else {
+        menuRef.set(data).then(function(){
           res.redirect('/dashboard/productsMenu')
-        } else {
-          productsMenusRef.set(data).then(function(){
-            res.redirect('/dashboard/productsMenu')
-          })
-        }
-      })
+        })
+      }
+    })
 })
 
 // 產品選單 -- 主選單 -- 更新
-router.post('/productsMenu/update/:id', function(req,res){
-  const id = req.params.id;
+router.post('/productsMenu/update/:path', function(req,res){
   const data = req.body;
-  productsMenuRef.child(id).update(data).then(function(){
+  productsMenuRef.child(data.path).update(data).then(function(){
     req.flash('info','子項目已更新')
     res.redirect(`/dashboard/productsMenu`);
   })
@@ -93,46 +90,47 @@ router.post('/productsMenu/update/:id', function(req,res){
 
 
 // 產品選單 -- 主選單 -- 刪除
-router.post('/productsMenu/delete/:id', function(req,res){
-  const id = req.params.id;
-  productsMenuRef.child(id).remove();
-  req.flash('info','主選單已刪除')
-  res.redirect('/dashboard/productsMenu');
+router.post('/productsMenu/delete/:path', function(req,res){
+  productsMenuRef.child(req.params.path).remove();
+    req.flash('info','主選單已刪除')
+    res.redirect('/dashboard/productsMenu');
 });
 
 
 
 
 // 產品選單 -- 子選單 -- 新增
-router.post('/productsMenu/createSubMenu/:id', function (req, res){
+router.post('/productsMenu/createSubMenu/:path', function (req, res){
   const data = req.body;
+
   const id = req.params.id;
+console.log(data,id);
   const subMenusRef = firebaseAdminDb.ref(`productsMenu/${id}/subMenus`);
-  const productsSubMenusRef = subMenusRef.push(data.subName);
-  subMenusRef.orderByValue().equalTo(data.subName).once('value')
-  .then(function(snapshot){
-    if (snapshot.val() !== null) {
-      req.flash('info','已有相同名稱');
-      res.redirect('/dashboard/productsMenu')
-    } else {
-      productsSubMenusRef.then(function () {
-        res.redirect(`/dashboard/productsMenu`);
-      })
-    }
-  })
+  // const productsSubMenusRef = subMenusRef.push(data.subName);
+  // subMenusRef.orderByValue().equalTo(data.subName).once('value')
+  // .then(function(snapshot){
+  //   if (snapshot.val() !== null) {
+  //     req.flash('info','已有相同名稱');
+  //     res.redirect('/dashboard/productsMenu')
+  //   } else {
+  //     productsSubMenusRef.then(function () {
+  //       res.redirect(`/dashboard/productsMenu`);
+  //     })
+  //   }
+  // })
 
 
 })
 // 產品選單 -- 子選單 -- 更新
 router.post('/productsMenu/updateSubName/:id', function(req,res){
-  const subMenusRef = firebaseAdminDb.ref(`productsMenu/${id}/subMenus`);
+  // const subMenusRef = firebaseAdminDb.ref(`productsMenu/${id}/subMenus`);
   const id = req.params.id;
   console.log(id);
   const data = req.body;
   console.log(data);
-  subMenusRef.child(id).update(data);
-  req.flash('info','子項目已更新')
-  res.redirect('/dashboard/productsMenu');
+  // subMenusRef.child(id).update(data);
+  // req.flash('info','子項目已更新')
+  // res.redirect('/dashboard/productsMenu');
 });
 
 // 產品選單 -- 子選單 -- 刪除

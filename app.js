@@ -7,7 +7,6 @@ const logger = require('morgan');
 const session = require('express-session');
 const flash = require('connect-flash');
 const engine = require('ejs-locals');
-const axios = require('axios');
 
 // routes
 const dashboardRouter = require('./routes/dashboard');

@@ -19,8 +19,12 @@
                         <table class="table">
                             <tr>
                                 <td>
-                                    <label for="name">分類名稱</label>
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="請輸入分類名稱">
+                                    <label for="name">名稱</label>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="請輸入分類">
+                                </td>
+                                <td>
+                                    <label for="path">路徑</label>
+                                    <input type="text" class="form-control" id="path" name="path" placeholder="請輸入路徑">
                                 </td>
                                 <td>
                                     <label for="path">狀態</label>
@@ -35,6 +39,47 @@
                             </tr>
                         </table>
                     </form>
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">名稱</th>
+                            <th scope="col">路徑</th>
+                            <th scope="col">狀態</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        <% productsMenu.forEach((tabs, index) => { %>
+                            <tr>
+                                <td><%= index %></td>
+                                <td>
+                                    <a class="list-group-item list-group-item-action <%= index === 0 ? 'active' : '' %>" 
+                                        id="list-<%= index %>-list" 
+                                        data-bs-toggle="list" 
+                                        href="#list-<%= index %>" 
+                                        role="tab" 
+                                        aria-controls="list-<%= index %>"
+                                        data-menuId="<%= tabs.id %>">
+                                        <%= tabs.name %>
+                                    </a>
+                                </td>
+                                <td>
+                                    <form action="/dashboard/productsMenu/update/<%- tabs.path %>" method="POST">
+                                        <input type="text" class="form-control form-control-sm" name="name" value="<%- tabs.name %>">
+                                        <input type="text" class="form-control form-control-sm" name="path" value="<%- tabs.path %>">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">更新</button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="/dashboard/productsMenu/delete/<%- tabs.path %>" method="POST">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" data-path="<%- tabs.path %>">刪除</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+
+                        </tbody>
+                    </table>
                     <!-- 顯示 -->
                     <% productsMenu.forEach((tabs, index) => { %>
                             <a class="list-group-item list-group-item-action <%= index === 0 ? 'active' : '' %>" 
@@ -46,12 +91,13 @@
                                 data-menuId="<%= tabs.id %>">
                                 <%= tabs.name %>
                             </a>
-                            <form action="/dashboard/productsMenu/update/<%- tabs.id %>" method="POST">
+                            <form action="/dashboard/productsMenu/update/<%- tabs.path %>" method="POST">
                                 <input type="text" class="form-control form-control-sm" name="name" value="<%- tabs.name %>">
-                                <button type="submit" class="btn btn-outline-danger btn-sm" >更新</button>
+                                <input type="text" class="form-control form-control-sm" name="path" value="<%- tabs.path %>">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">更新</button>
                             </form>
-                            <form action="/dashboard/productsMenu/delete/<%- tabs.id %>" method="POST">
-                                <button type="submit" class="btn btn-outline-danger btn-sm" >刪除</button>
+                            <form action="/dashboard/productsMenu/delete/<%- tabs.path %>" method="POST">
+                                <button type="submit" class="btn btn-outline-danger btn-sm" data-path="<%- tabs.path %>">刪除</button>
                             </form>
                     <% }) %>
                 </div>
@@ -87,7 +133,7 @@
                                     <% for(var i in tabs.subMenus) { %>
                                         <tr >
                                             <td>
-                                                <input type="text" class="form-control" id="<%- i %>" value="<%- tabs.subMenus[i] %>">
+                                                <input type="text" class="form-control" id="<%- i %>" name="subName" value="<%- tabs.subMenus[i] %>">
                                             </td>
                                             <td class="d-flex justify-content-end">
                                                 <form action="/dashboard/productsMenu/updateSubName/<%- i %>" method="post">
